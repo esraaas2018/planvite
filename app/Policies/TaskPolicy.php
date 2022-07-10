@@ -59,6 +59,11 @@ class TaskPolicy
         return $allow;
     }
 
+    public static function editAgenda(User $user, Task $task)
+    {
+        return $user->id == $task->user_id;
+    }
+
     public static function delete(User $user, Task $task)
     {
         $project = $task->project;

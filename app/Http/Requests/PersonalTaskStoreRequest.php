@@ -26,8 +26,8 @@ class PersonalTaskStoreRequest extends FormRequest
     {
         return [
             'name'=>'required|max:255',
-            'deadline'=>'nullable|date'
-
+            'deadline'=>'nullable|date',
+            'description' => 'string|nullable'
         ];
     }
 

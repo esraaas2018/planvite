@@ -17,10 +17,11 @@ class CreatePersonalTasksTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->boolean('completed')->default(0);
+            $table->boolean('completed')->default(false);
             $table->date('deadline')->nullable();
-            $table->foreignId('user_id')->nullable();
-            $table->foreignId('project_id');
+            $table->foreignId('user_id');
+            $table->enum('priority', ['low', 'medium', 'high','severe']);
+
             $table->timestamps();
         });
     }

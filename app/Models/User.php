@@ -9,6 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @method static orderByDesc(string $string)
+ * @method static withoutGlobalScope(string $class)
+ * @method static find($user_id)
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -64,6 +69,11 @@ class User extends Authenticatable
         return $this->hasMany(PersonalTask::class);
     }
 
+    public function pinnedTasks()
+    {
+        return $this->belongsToMany(Task::class, 'agenda');
+    }
+
     public function isAdmin(Project $project)
     {
         return $project->user_id == Auth::id();
@@ -72,7 +82,7 @@ class User extends Authenticatable
     public function isAssignee(Project $project)
     {
         $tasks_count_of_user = $this->assigned_tasks()->whereHas('project', function ($q) use ($project) {
-            return $q->where('projects.id',$project->id);
+            return $q->where('projects.id', $project->id);
         })->count();
         return (bool)$tasks_count_of_user;
     }
@@ -85,11 +95,11 @@ class User extends Authenticatable
 
     public function role(Project $project)
     {
-        if($this->isAdmin($project)){
+        if ($this->isAdmin($project)) {
             $role = 'admin';
-        }else if($this->isAssignee($project)){
+        } else if ($this->isAssignee($project)) {
             $role = 'assignee';
-        }else{
+        } else {
             $role = 'imposter';
         }
         return $role;

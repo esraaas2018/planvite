@@ -13,6 +13,7 @@ use App\Models\Project;
 use App\Models\Status;
 use App\Scopes\AdminScope;
 use App\Models\User;
+use App\Services\NotificationSender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function GuzzleHttp\Promise\all;
@@ -62,6 +63,11 @@ class ProjectController extends Controller
             return apiResponse(new ProjectResource($project), 'the user is already there');
         }
         $project->participants()->attach($user);
+        NotificationSender::send(
+            $user, [
+            'title' => 'Welcome.',
+            'body' => 'You have been added to '.$project->name.' project']);
+
         return apiResponse(new ProjectResource($project), 'user added to project successfully');
     }
 

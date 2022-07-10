@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Policies\PersonalTaskPolicy;
+use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class PersonalTaskUpdateRequest extends FormRequest
+class AgendaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class PersonalTaskUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return PersonalTaskPolicy::access(Auth::user(), $this->route()->personal_task);
+        return TaskPolicy::editAgenda(Auth::user(), $this->route()->task);
     }
 
     /**
@@ -26,9 +26,7 @@ class PersonalTaskUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-         'name'=>  'required|max:255',
-            'deadline'=>'nullable|date'
+            //
         ];
     }
-
 }

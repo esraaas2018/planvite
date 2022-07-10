@@ -52,6 +52,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('/projects/{project}/statuses',  [StatusController::class, 'index']);
 
+    Route::put('/tasks/{task}/pin',  [TaskController::class, 'pinTask']);
     Route::apiResource('personal_tasks', "PersonalTaskController");
 });
 

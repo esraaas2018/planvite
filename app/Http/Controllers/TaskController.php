@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AgendaRequest;
 use App\Http\Requests\SprintStoreRequest;
 use App\Http\Requests\SprintUpdateRequest;
 use App\Http\Requests\TaskChangeStatusRequest;
@@ -20,7 +21,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\AssertableJsonString;
-use Modules\Notification\NotificationSender;
 
 class TaskController extends Controller
 {
@@ -72,4 +72,18 @@ class TaskController extends Controller
         $task->delete();
         return apiResponse(null,'task deleted successfully');
     }
+
+    public function pinTask(AgendaRequest $request, Task $task)
+    {
+        $user = Auth::user();
+
+        if ($user->pinnedTasks()->where('task_id', $task->id)->exists()) {
+            $user->pinnedTasks()->detach($task);
+            return apiResponse(null, 'task unpinned');
+        }
+
+        $user->pinnedTasks()->attach($task);
+        return apiResponse(null, 'task pinned');
+    }
+
 }

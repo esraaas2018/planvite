@@ -14,13 +14,10 @@ class PersonalTask extends Model
         'completed',
         'deadline',
         'user_id',
-        'project_id',
+        'priority'
     ];
 
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
-    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

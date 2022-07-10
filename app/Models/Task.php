@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
+/**
+ * @method static withoutGlobalScope(string $class)
+ */
 class Task extends Model
 {
     use HasFactory, BelongsToThrough;

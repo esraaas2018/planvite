@@ -2,15 +2,16 @@
 
 namespace App\Console;
 
-use App\Models\Task;
-use App\Models\User;
-use App\Services\NotificationSender;
-use Carbon\Carbon;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    protected $commands = [
+        Commands\NotificationCron::class,
+    ];
+
     /**
      * Define the application's command schedule.
      *
@@ -19,18 +20,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $tasks = Task::all();
-
-        foreach($tasks as $task){
-            $date_now = Carbon::now();
-            $deadline = Carbon::parse($task->expiry_date);
-            $diff = $deadline ->diffInDays($date_now);
-        NotificationSender::send();
-
+        $schedule->command('notification:cron')
+            ->everyMinute();
     }
-        // $schedule->command('inspire')->hourly();
-    }
-
     /**
      * Register the commands for the application.
      *
@@ -38,7 +30,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
