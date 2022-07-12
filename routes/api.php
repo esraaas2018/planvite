@@ -26,10 +26,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('sendNotificationToUser', [UserController::class, 'sendNotificationToUser']);
+Route::middleware(['treblle'])->group(function () {
+    // YOUR API ROUTES GO HERE
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/login', [UserController::class, 'login']);
+});
 
-
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
+//Route::post('/register', [UserController::class, 'register']);
+//Route::post('/login', [UserController::class, 'login']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('/logout', [UserController::class, 'logout']);
