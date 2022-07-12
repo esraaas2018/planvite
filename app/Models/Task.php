@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Scopes\TaskScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
@@ -64,6 +65,11 @@ class Task extends Model
 
     public function status(){
         return $this->belongsTo(Status::class);
+    }
+
+    public function subtasks()
+    {
+        return $this->hasMany(SubTask::class);
     }
 
 }
