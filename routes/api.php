@@ -4,6 +4,7 @@ use App\Http\Controllers\PersonalTaskController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AcceptJson;
@@ -30,6 +31,7 @@ Route::middleware(['treblle'])->group(function () {
     // YOUR API ROUTES GO HERE
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
+
     Route::group(['middleware' => 'auth:sanctum'], function () {
 
         Route::get('/logout', [UserController::class, 'logout']);
@@ -54,11 +56,18 @@ Route::middleware(['treblle'])->group(function () {
 
         Route::put('/tasks/{task}/pin',  [TaskController::class, 'pinTask']);
         Route::apiResource('personal_tasks', "PersonalTaskController");
+//subtask
+        Route::apiResource('subtasks', "SubTaskController")->except(['index','store']);
+        Route::get('tasks/{task}/subtasks',  [SubTaskController::class, 'index']);
+        Route::post('tasks/{task}/subtasks',  [SubTaskController::class, 'store']);
+
+
     });
 });
 
 //Route::post('/register', [UserController::class, 'register']);
 //Route::post('/login', [UserController::class, 'login']);
+//
 //Route::group(['middleware' => 'auth:sanctum'], function () {
 //
 //    Route::get('/logout', [UserController::class, 'logout']);
@@ -83,8 +92,13 @@ Route::middleware(['treblle'])->group(function () {
 //
 //    Route::put('/tasks/{task}/pin',  [TaskController::class, 'pinTask']);
 //    Route::apiResource('personal_tasks', "PersonalTaskController");
+////subtask
+//    Route::apiResource('subtasks', "SubTaskController")->except(['index','store']);
+//    Route::get('tasks/{task}/subtasks',  [SubTaskController::class, 'index']);
+//    Route::post('tasks/{task}/subtasks',  [SubTaskController::class, 'store']);
+//
+//
 //});
-
 Route::get('/test', function (Request $request) {
     $project = Project::first();
 

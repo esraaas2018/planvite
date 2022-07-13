@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AgendaRequest;
-use App\Http\Requests\SprintStoreRequest;
-use App\Http\Requests\SprintUpdateRequest;
 use App\Http\Requests\TaskChangeStatusRequest;
 use App\Http\Requests\TaskDeleteRequest;
 use App\Http\Requests\TaskIndexRequest;
@@ -13,14 +11,8 @@ use App\Http\Requests\TaskUpdateRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Sprint;
-use App\Models\Status;
 use App\Models\Task;
-use App\Policies\TaskPolicy;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Testing\AssertableJsonString;
 
 class TaskController extends Controller
 {
