@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SprintDeleteRequest;
 use App\Http\Requests\SprintOffRequest;
+use App\Http\Requests\SprintRecycleRequest;
 use App\Http\Requests\SprintRunRequest;
 use App\Http\Requests\SprintShowRequest;
 use App\Http\Requests\SprintStoreRequest;
@@ -65,4 +66,14 @@ class SprintController extends Controller
         $sprint->save();
         return apiResponse(new SprintResource($sprint),'sprint turn off successfully');
     }
+
+    public function recycleSprint(SprintRecycleRequest $request ,Sprint $sprint)
+    {
+        $sprint->tasks()->get()->map(function($task){
+            $task->status_id = 1;
+            $task->save();
+        });
+        return apiResponse(new SprintResource($sprint),'sprint recycle successfully');
+    }
+
 }

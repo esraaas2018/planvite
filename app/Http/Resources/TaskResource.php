@@ -22,6 +22,7 @@ class TaskResource extends JsonResource
             'sprint_id' => $this->sprint_id,
             'user_id'=>$this->user_id,
             'status_id'=>$this->status_id,
+            'priority'=>$this->priority,
         ];
     }
 }

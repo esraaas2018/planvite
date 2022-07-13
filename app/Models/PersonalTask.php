@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\PersonalTaskScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,4 +23,10 @@ class PersonalTask extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new PersonalTaskScope());
+    }
+
 }

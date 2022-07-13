@@ -63,27 +63,35 @@ class ProjectController extends Controller
             return apiResponse(new ProjectResource($project), 'the user is already there');
         }
         $project->participants()->attach($user);
-        NotificationSender::send(
-            $user, [
-            'title' => 'Welcome.',
-            'body' => 'You have been added to '.$project->name.' project']);
+//        NotificationSender::send(
+//            $user, [
+//            'title' => 'Welcome.',
+//            'body' => 'You have been added to '.$project->name.' project']);
 
         return apiResponse(new ProjectResource($project), 'user added to project successfully');
     }
 
     //revoke user from a project
-    public function revokeUser(ProjectRevokeParticipantRequest $request, Project $project, User $user){
-        $project->participants()->detach($user);
-        $user->tasks()->ofProject($project)->get()->map(function($task){
-            $task->user_id = null;
-            $task->save();
-        });
+    public function revokeUser(ProjectRevokeParticipantRequest $request, Project $project){
+        $user = User::where('email', $request->email)->firstOrFail();
+        if($project->participants()->where('user_id' ,$user->id)->first()){
+            $project->participants()->detach($user);
+            $tasks = $project->tasks()->where('user_id',$user->id)->get();
+            if($tasks){
+                $tasks->map(function($task){
+                    $task->user_id = null;
+                    $task->save();
+                });
+            }
+            return apiResponse(new ProjectResource($project), 'user revoked to project successfully');
+        }
+
 //        $user->personal_tasks()->where('project_id', $project->id)->get()->map(function($task){
 //            $task->project_id = null;
 //            $task->save();
 //        });;
-        apiResponse(new ProjectResource($project),
-            'user revoked to project successfully'
+        return apiResponse(new ProjectResource($project),
+            'user not in project '
         );
     }
 

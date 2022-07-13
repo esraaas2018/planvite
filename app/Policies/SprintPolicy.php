@@ -42,4 +42,10 @@ class SprintPolicy
         $project = $sprint->project;
         return $project && $user->isAdmin($project);
     }
+
+    public static function recycle(User $user, Sprint $sprint)
+    {
+        $project = $sprint->project;
+        return $project && $user->isAdmin($project);
+    }
 }

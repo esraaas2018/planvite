@@ -3,19 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonalTaskDestroyRequest;
-use App\Http\Requests\PersonalTaskShowRequest;
 use App\Http\Requests\PersonalTaskStoreRequest;
 use App\Http\Requests\PersonalTaskUpdateRequest;
+use App\Http\Requests\PesronalTaskChangeStatusRequest;
 use App\Http\Resources\PersonalTaskResource;
 use App\Models\PersonalTask;
 use Illuminate\Support\Facades\Auth;
+
 class PersonalTaskController extends Controller
 {
 
     public function index()
     {
-        $user =Auth::user();
-     return apiResponse($user->personal_tasks()->get());
+        $personal_tasks = PersonalTask::all();
+        return apiResponse(PersonalTaskResource::collection($personal_tasks),'all personal tasks');
     }
 
     public function store(PersonalTaskStoreRequest $request)
@@ -25,23 +26,30 @@ class PersonalTaskController extends Controller
                 'user_id' => Auth::id(),
                 'completed' => $request->has('completed'),
             ]);
-        return apiResponse($newTask, 'task created.');
+        return apiResponse(new PersonalTaskResource($newTask) , 'task created.');
     }
 
-    public function show(PersonalTaskShowRequest $request,PersonalTask $personal_task)
+    public function show(PersonalTask $personal_task)
     {
-        return apiResponse(PersonalTaskResource::make($personal_task));
+        return apiResponse(new PersonalTaskResource($personal_task));
     }
 
     public function update(PersonalTask $personal_task,PersonalTaskUpdateRequest $request)
     {
         $personal_task->update($request->all());
-        return apiResponse(PersonalTaskResource::make($personal_task),'task updated.');
+        return apiResponse(new PersonalTaskResource($personal_task),'task updated.');
     }
 
     public function destroy(PersonalTask $personal_task,PersonalTaskDestroyRequest $request)
     {
-            $personal_task->delete();
+        $personal_task->delete();
         return apiResponse(null,'task deleted');
     }
+
+    public function changeStatus(PesronalTaskChangeStatusRequest $request,PersonalTask $personal_task){
+        $personal_task->completed = $request->completed;
+        $personal_task->save();
+        return apiResponse(new PersonalTaskResource($personal_task),'task changed Status successfully');
+    }
+
 }

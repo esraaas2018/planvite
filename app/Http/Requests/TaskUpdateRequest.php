@@ -30,7 +30,8 @@ class TaskUpdateRequest extends FormRequest
             'name'=>['nullable','string'],
             'deadline'=>['nullable','date'],
             'description'=>['nullable','string'],
-            'status' => ['nullable','string']
+            'status' => ['nullable','string'],
+            'priority'=>  ['nullable','in:low,medium,high,severe'],
         ];
     }
 }

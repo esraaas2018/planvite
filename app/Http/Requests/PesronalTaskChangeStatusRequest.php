@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Policies\PersonalTaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
-class PersonalTaskStoreRequest extends FormRequest
+class PesronalTaskChangeStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,8 +15,7 @@ class PersonalTaskStoreRequest extends FormRequest
      */
     public function authorize()
     {
-
-        return true;
+        return PersonalTaskPolicy::access(Auth::user(), $this->route()->personal_task);
     }
 
     /**
@@ -26,11 +26,7 @@ class PersonalTaskStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required|max:255',
-            'deadline'=>'nullable|date',
-            'description' => 'string|nullable',
-            'priority'=>  ['nullable','in:low,medium,high,severe'],
+           'completed'=>'required|boolean'
         ];
     }
-
 }

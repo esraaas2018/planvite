@@ -26,8 +26,9 @@ class PersonalTaskUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-         'name'=>  'required|max:255',
-            'deadline'=>'nullable|date'
+            'name'=>  'required|max:255',
+            'deadline'=>'nullable|date',
+            'priority'=>  ['nullable','in:low,medium,high,severe'],
         ];
     }
 
