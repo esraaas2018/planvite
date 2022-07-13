@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 
+/**
+ * @method static first()
+ */
 class Project extends Model
 {
     use HasFactory;

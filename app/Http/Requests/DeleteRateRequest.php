@@ -1,11 +1,9 @@
 <?php
 
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class PersonalTaskStoreRequest extends FormRequest
+class DeleteRateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +12,6 @@ class PersonalTaskStoreRequest extends FormRequest
      */
     public function authorize()
     {
-
         return true;
     }
 
@@ -25,12 +22,6 @@ class PersonalTaskStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name'=>'required|max:255',
-            'deadline'=>'nullable|date',
-            'description' => 'string|nullable',
-            'priority'=>  ['nullable','in:low,medium,high'],
-        ];
+        return [];
     }
-
 }

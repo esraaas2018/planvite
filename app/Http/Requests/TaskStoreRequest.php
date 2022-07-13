@@ -30,7 +30,7 @@ class TaskStoreRequest extends FormRequest
             'deadline'=>['required','date'],
             'description'=>['nullable','string'],
             'user_id'=>['int','required','exists:participants,user_id'],
-            'priority'=>  ['nullable','in:low,medium,high,severe'],
+            'priority'=>  ['nullable','in:low,medium,high'],
         ];
     }
 }

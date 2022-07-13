@@ -20,7 +20,7 @@ class CreateTasksTable extends Migration
             $table->date('deadline');
             $table->foreignId('status_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('sprint_id')->constrained()->cascadeOnDelete();
-            $table->enum('priority', ['low', 'medium', 'high','severe'])->default('low');
+            $table->enum('priority', ['low', 'medium', 'high'])->default('low');
             $table->boolean('deadline_notified')->default(false);
             $table->boolean('almost_deadline_notified')->default(false);
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();

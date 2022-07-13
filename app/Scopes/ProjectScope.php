@@ -12,6 +12,7 @@ class ProjectScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
+        //project->participants()->where(user_id,Auth::user_id)
         $user = Auth::user();
         return $builder->whereHas('participants',function($q) use ($user) {
             return $q->where('users.id', $user->id);

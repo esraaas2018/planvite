@@ -27,6 +27,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'rating',
+        'fcm_token',
+        'language'
     ];
 
     /**
@@ -47,6 +50,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getRatingAttribute(){
+        if(($rating = $this->getAttributes()['rating']) === null){
+            $rating = $this->ratings()->avg('rating');
+            $this->update(['rating' => $rating]);
+        }
+        return $rating;
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'reviewed_id');
+    }
 
     public function own_projects()
     {

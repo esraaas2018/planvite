@@ -28,11 +28,6 @@ class SubTaskController extends Controller
         return apiResponse(new SubTaskResource($subtask), 'subtask created successfully');
     }
 
-    public function show(SubTaskShowRequest $request, SubTask $subtask)
-    {
-        return apiResponse(new SubTaskResource($subtask));
-    }
-
     public function update(SubTaskUpdateRequest $request, SubTask $subtask)
     {
         $subtask->update([

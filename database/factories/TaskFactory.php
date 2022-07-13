@@ -3,9 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class PersonalTaskFactory extends Factory
+class TaskFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,9 +14,12 @@ class PersonalTaskFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->sentence(),
-            'user_id'=>1,
-            'priority'=>'low'
+            'name'=>$this->faker->name,
+            'sprint_id'=>1,
+            'user_id'=>2,
+            'deadline'=>$this->faker->date,
+            'status_id'=>'1',
+            'description'=>$this->faker->sentence,
         ];
     }
 }

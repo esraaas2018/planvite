@@ -9,14 +9,13 @@ use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\SprintResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\UsersResource;
 use App\Models\Project;
 use App\Models\Status;
-use App\Scopes\AdminScope;
 use App\Models\User;
 use App\Services\NotificationSender;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use function GuzzleHttp\Promise\all;
 
 class ProjectController extends Controller
 {
@@ -42,43 +41,46 @@ class ProjectController extends Controller
             'user_id' => Auth::id()
         ];
         $project = Project::create($data);
+        $project->participants()->attach(Auth::user());
 
         //ordering the statuses and merge the defaults
         $statuses = collect(['pending']);
         $statuses = $statuses->merge((array)$request->statuses);
         $statuses->push('done');
 
-        $statuses->map(function($status, $key) use ($project) {
+        $statuses->map(function ($status, $key) use ($project) {
             $new_status = Status::firstOrCreate(['name' => $status]);
             $project->statuses()->attach($new_status->id, ['order' => $key]);
         });
 
-        return apiResponse(new ProjectResource($project),'project create successfully',201);
+        return apiResponse(new ProjectResource($project), 'project create successfully', 201);
     }
 
     //add user to a project
-    public function addUser(ProjectAddParticipantRequest $request, Project $project){
+    public function addUser(ProjectAddParticipantRequest $request, Project $project)
+    {
         $user = User::where('email', $request->email)->firstOrFail();
-        if($project->participants()->where('user_id' ,$user->id)->first()){
+        if ($project->participants()->where('user_id', $user->id)->first()) {
             return apiResponse(new ProjectResource($project), 'the user is already there');
         }
         $project->participants()->attach($user);
-//        NotificationSender::send(
-//            $user, [
-//            'title' => 'Welcome.',
-//            'body' => 'You have been added to '.$project->name.' project']);
+        NotificationSender::send(
+            $user, [
+            'title' => 'Welcome.',
+            'body' => 'You have been added to ' . $project->name . ' project']);
 
         return apiResponse(new ProjectResource($project), 'user added to project successfully');
     }
 
     //revoke user from a project
-    public function revokeUser(ProjectRevokeParticipantRequest $request, Project $project){
+    public function revokeUser(ProjectRevokeParticipantRequest $request, Project $project)
+    {
         $user = User::where('email', $request->email)->firstOrFail();
-        if($project->participants()->where('user_id' ,$user->id)->first()){
+        if ($project->participants()->where('user_id', $user->id)->first()) {
             $project->participants()->detach($user);
-            $tasks = $project->tasks()->where('user_id',$user->id)->get();
-            if($tasks){
-                $tasks->map(function($task){
+            $tasks = $project->tasks()->where('user_id', $user->id)->get();
+            if ($tasks) {
+                $tasks->map(function ($task) {
                     $task->user_id = null;
                     $task->save();
                 });
@@ -86,13 +88,15 @@ class ProjectController extends Controller
             return apiResponse(new ProjectResource($project), 'user revoked to project successfully');
         }
 
-//        $user->personal_tasks()->where('project_id', $project->id)->get()->map(function($task){
-//            $task->project_id = null;
-//            $task->save();
-//        });;
         return apiResponse(new ProjectResource($project),
             'user not in project '
         );
+    }
+
+    public function usersList(Project $project)
+    {
+         $users = $project->participants()->get();
+        return apiResponse(UserResource::collection($users));
     }
 
     public function update(ProjectUpdateRequest $request, Project $project)
@@ -101,9 +105,9 @@ class ProjectController extends Controller
         return apiResponse(new ProjectResource($project));
     }
 
-    public function destroy(ProjectDeleteRequest $request,Project $project)
+    public function destroy(ProjectDeleteRequest $request, Project $project)
     {
         $project->delete();
-        return apiResponse(null , 'delete successfully', 200);
+        return apiResponse(null, 'delete successfully', 200);
     }
 }
