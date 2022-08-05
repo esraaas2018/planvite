@@ -13,7 +13,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static orderByDesc(string $string)
  * @method static withoutGlobalScope(string $class)
  * @method static find($user_id)
+ * @property mixed $id
  */
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -28,6 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'rating',
+        'phone_number',
         'fcm_token',
         'language'
     ];

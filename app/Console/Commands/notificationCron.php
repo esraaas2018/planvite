@@ -41,7 +41,8 @@ class notificationCron extends Command
                         NotificationSender::send(
                             $task->assignee, [
                             'title' => 'Deadline is soon!',
-                            'body' => 'You have reached 80% of' . $task->name . ' task time.']);
+                            'body' => 'You have reached 80% of' . $task->name . ' task time.'
+                            ]);
                     }
                     if ($time_percent >= 100 && !$task->deadline_notified) {
                         $task->deadline_notified = true;
@@ -49,7 +50,8 @@ class notificationCron extends Command
                         NotificationSender::send(
                             $task->assignee, [
                             'title' => 'You have reached the deadline.',
-                            'body' => 'You have reached the deadline of ' . $task->name . ' task.']);
+                            'body' => 'You have reached the deadline of ' . $task->name . ' task.'
+                            ]);
                     }
                 }
             }

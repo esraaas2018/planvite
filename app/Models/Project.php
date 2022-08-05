@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * @method static first()
+ * @property mixed $sprints
  */
 class Project extends Model
 {

@@ -20,8 +20,6 @@ class CreatePersonalTasksTable extends Migration
             $table->boolean('completed')->default(false);
             $table->date('deadline')->nullable();
             $table->foreignId('user_id');
-            $table->enum('priority', ['low', 'medium', 'high']);
-
             $table->timestamps();
         });
     }

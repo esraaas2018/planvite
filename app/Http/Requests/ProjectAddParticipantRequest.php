@@ -7,6 +7,9 @@ use http\Client\Curl\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property mixed $email
+ */
 class ProjectAddParticipantRequest extends FormRequest
 {
     /**

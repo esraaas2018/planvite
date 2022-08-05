@@ -28,7 +28,6 @@ class PersonalTaskUpdateRequest extends FormRequest
         return [
             'name'=>  'required|max:255',
             'deadline'=>'nullable|date',
-            'priority'=>  ['nullable','in:low,medium,high,severe'],
         ];
     }
 
