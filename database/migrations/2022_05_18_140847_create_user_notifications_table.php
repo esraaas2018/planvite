@@ -18,6 +18,7 @@ class CreateUserNotificationsTable extends Migration
             $table->string('title');
             $table->string('body');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('adder_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

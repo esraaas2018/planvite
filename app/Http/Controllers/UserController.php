@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserSettingsSetRequest;
+use App\Http\Resources\NotificationResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\FCMService;
+use Google\Cloud\Storage\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +19,15 @@ class UserController extends Controller
 
     public function checkToken(){
         return apiResponse();
+    }
+    public function userNotifications(){
+        $user = Auth::user();
+        $notifications=  $user->notifications()->get();
+        return apiResponse(NotificationResource::collection($notifications));
+    }
+    public function userInfo(){
+        $user = Auth::user();
+        return apiResponse(new UserResource($user));
     }
 
     public function settings(UserSettingsSetRequest $request)
@@ -35,6 +46,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone_number'=>$request->phone_number,
             'password' => Hash::make($request->password)
         ]);
         $token = $user->createToken('token')->plainTextToken;

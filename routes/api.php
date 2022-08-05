@@ -76,6 +76,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/settings', [UserController::class, 'settings']);
 
     //project
+    Route::get('/projects/details', [ProjectController::class, 'projectDetails']);
     Route::apiResource('projects', "ProjectController");
     Route::post('/projects/{project}/addParticipant', [ProjectController::class, 'addUser']);
     Route::post('/projects/{project}/revokeParticipant', [ProjectController::class, 'revokeUser']);
@@ -108,10 +109,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //list of all users in a project
     Route::get('/projects/{project}/users', [ProjectController::class, 'usersList']);
 
+
+    //user's projects & personal info
+    Route::get('user/projects', [ProjectController::class, 'UserProjects']);
+    Route::get('user/notifications', [UserController::class, 'userNotifications']);
+    Route::get('user/info', [UserController::class, 'userInfo']);
+
     //Rating
     Route::post('/projects/{project}/{reviewed}', [RatingController::class, 'rateUser']);
 });
-Route::get('ttt', function(){
+Route::get('ttt', function () {
     return User::find(5)->rating;
 });
 Route::get('/test', function (Request $request) {
