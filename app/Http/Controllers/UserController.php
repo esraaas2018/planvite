@@ -59,20 +59,20 @@ class UserController extends Controller
     {
 
         $user = User::query()->where('email', $request->email)->first();
-        if(!$user->email_verified_at){
-            if($request->otp){
-                $auth = app('firebase.auth');
-                $signInResult = $auth->signInWithEmailAndOobCode("edwardkarra@gmail.com", $request->otp);
-                if(!$signInResult)
-                    abort(403, "OTP Error");
-                else{
-                    $user->email_verified_at = now();
-                    $user->save();
-                }
-            }else{
-                abort(403, "Not verified account");
-            }
-        }
+//        if(!$user->email_verified_at){
+//            if($request->otp){
+//                $auth = app('firebase.auth');
+//                $signInResult = $auth->signInWithEmailAndOobCode("edwardkarra@gmail.com", $request->otp);
+//                if(!$signInResult)
+//                    abort(403, "OTP Error");
+//                else{
+//                    $user->email_verified_at = now();
+//                    $user->save();
+//                }
+//            }else{
+//                abort(403, "Not verified account");
+//            }
+//        }
 
         if ($user && Hash::check($request->password, $user->password)) {
             $token = $user->createToken('token')->plainTextToken;
