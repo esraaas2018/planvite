@@ -84,7 +84,7 @@ class ProjectController extends Controller
         $pending = Status::firstOrCreate(['name' => 'pending']);
         $project->statuses()->attach($pending->id, ['order' => 0]);
 
-        $pending = Status::firstOrCreate(['name' => 'pending']);
+        $pending = Status::firstOrCreate(['name' => 'done']);
         $project->statuses()->attach($pending->id, ['order' => 10e5]);
 
         return apiResponse(new ProjectResource($project), 'project create successfully', 201);
@@ -95,22 +95,22 @@ class ProjectController extends Controller
     {
         $user = User::where('email', $request->email)->firstOrFail();
 
+
         if ($project->participants()->where('user_id', $user->id)->first()) {
             return apiResponse(new ProjectResource($project), 'the user is already there', 422);
         }
-
         $project->participants()->attach($user);
-         if ($project->participants()->where('user_id', $user->id)->first()) {
-          return apiResponse(new ProjectResource($project), 'the user is already there');
-          }
-         $project->participants()->attach($user);
         NotificationSender::send(
-             $user, [
-            'title' => 'Welcome.',
-            'body' => 'You have been added to ' . $project->name . ' project',
-         ]  , $project->user_id);
+            $user,
+            [
+                'title' => 'Welcome.',
+                'body' => 'You have been added to ' . $project->name . ' project'
+            ],
+            null,
+            $user->image
+        );
 
-         return apiResponse(new ProjectResource($project), 'user added to project successfully');
+        return apiResponse(new ProjectResource($project), 'user added to project successfully');
     }
 
     //revoke user from a project

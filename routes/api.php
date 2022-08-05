@@ -10,8 +10,13 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\ApnsConfig;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +74,10 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    //Statuses
+    Route::get('/projects/{project}/statuses', [StatusController::class, 'index']);
+    Route::post('/projects/{project}/statuses/of-project', [StatusController::class, 'store']);
+    Route::delete('/projects/{project}/statuses/{status}/of-project', [StatusController::class, 'delete']);
 
     Route::get('/check-token', [UserController::class, 'checkToken']);
     Route::get('/logout', [UserController::class, 'logout']);
@@ -96,7 +105,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/tasks/{task}/change-status', [TaskController::class, 'changeStatus']);
     Route::post('/sprints/{sprint}/tasks', [TaskController::class, 'store']);
 
-    Route::get('/projects/{project}/statuses', [StatusController::class, 'index']);
 
     Route::put('/tasks/{task}/pin', [TaskController::class, 'pinTask']);
     Route::apiResource('personal_tasks', "PersonalTaskController");
@@ -110,28 +118,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //list of all users in a project
     Route::get('/projects/{project}/users', [ProjectController::class, 'usersList']);
 
+
+    //user's projects & personal info
+    Route::get('user/projects', [ProjectController::class, 'UserProjects']);
+    Route::get('user/notifications', [UserController::class, 'userNotifications']);
+    Route::get('user/info', [UserController::class, 'userInfo']);
+
     //Rating
-    Route::post('/projects/{project}/{reviewed}', [RatingController::class, 'rateUser']);
+    Route::post('/projects/{project}/review/{reviewed}', [RatingController::class, 'rateUser']);
 
-    //Statuses
-    Route::post('/projects/{project}/statuses', [StatusController::class, 'store']);
-    Route::delete('/projects/{project}/statuses/{status}', [StatusController::class, 'delete']);
 });
 
-
-Route::get('ttt', function(){
-    return User::find(5)->rating;
-});
-Route::get('/test', function (Request $request) {
-    //$project = Project::first();
-
-    $user = User::orderByDesc('id')->first();
-    return $user->createToken('test')->plainTextToken;
-});
-
-Route::get('/test2', function (Request $request) {
-    //$project = Project::first();
-    //$user = Auth::user();
-    //return $user->createToken('test')->plainTextToken;
-    dd(Task::all()->pluck('id')->toArray());
-})->middleware('auth:sanctum');

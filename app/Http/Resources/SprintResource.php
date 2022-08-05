@@ -21,7 +21,7 @@ class SprintResource extends JsonResource
             'description' => $this->description,
             'deadline' => $this->deadline,
             'project_id' => $this->project_id,
-            'tasks' => $request->of_user ? $tasks->ofUser()->get() : $tasks->get(),
+            'tasks' => $request->of_user ? TaskResource::collection($tasks->ofUser()->get()) : TaskResource::collection($tasks->get()),
 
         ];
     }

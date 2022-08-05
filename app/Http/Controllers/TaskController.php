@@ -19,13 +19,24 @@ class TaskController extends Controller
     public function index(TaskIndexRequest $request, Project $project)
     {
 //        TaskScope applied
-        $tasks = $project->sprints()->where('status',true)->firstOrFail()
-            ->tasks()->whereHas('status', function ($q) use ($request) {
-            return $q->where('id', $request->status_id);
-        })->get();
+//        $tasks = $project->sprints()->where('status', true)->firstOrFail()
+//            ->tasks()->whereHas('status', function ($q) use ($request) {
+//                return $q->where('id', $request->status_id);
+//            })->get();
 
-       // $tasks = $project->tasks()->where('status_id', $request->status_id)->get();
-        return apiResponse(TaskResource::collection($tasks));
+        $statuses = $project->statuses()->get();
+
+        $data = $statuses->map(function ($status) use ($project) {
+            return [
+                'status_name' => $status->name,
+                'tasks' => TaskResource::collection($project->sprints()->where('status', true)->firstOrFail()
+                    ->tasks()->whereHas('status', function ($q) use ($status) {
+                        return $q->where('id', $status->id);
+                    })->get())
+            ];
+        });
+
+        return apiResponse($data);
     }
 
     public function store(Sprint $sprint, TaskStoreRequest $request)
@@ -45,24 +56,25 @@ class TaskController extends Controller
     public function update(TaskUpdateRequest $request, Task $task)
     {
         $task->update([
-            'name'=>$request->name,
-            'deadline'=>$request->deadline,
-            'description'=>$request->description
+            'name' => $request->name,
+            'deadline' => $request->deadline,
+            'description' => $request->description
         ]);
-        return apiResponse(new TaskResource($task),'task updated successfully');
+        return apiResponse(new TaskResource($task), 'task updated successfully');
     }
 
-    public function changeStatus(TaskChangeStatusRequest $request,Task $task){
+    public function changeStatus(TaskChangeStatusRequest $request, Task $task)
+    {
 //        dd($request->all());
         $task->status_id = $request->status_id;
         $task->save();
-        return apiResponse(new TaskResource($task),'task changed Status successfully');
+        return apiResponse(new TaskResource($task), 'task changed Status successfully');
     }
 
-    public function destroy(TaskDeleteRequest $request,Task $task)
+    public function destroy(TaskDeleteRequest $request, Task $task)
     {
         $task->delete();
-        return apiResponse(null,'task deleted successfully');
+        return apiResponse(null, 'task deleted successfully');
     }
 
     public function pinTask(AgendaRequest $request, Task $task)

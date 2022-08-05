@@ -16,8 +16,8 @@ class UserNotification extends Model
         'title',
         'body',
         'user_id',
-        'adder_id'
-
+        'adder_id',
+        'image',
     ];
     public function user(): BelongsTo
     {

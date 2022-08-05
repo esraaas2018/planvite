@@ -12,7 +12,7 @@ use Kreait\Firebase\Messaging\CloudMessage;
 
 class NotificationSender
 {
-    public static function send(User $user, array $message, $adder_id =null, $model_type = null, $model_id = null)
+    public static function send(User $user, array $message, $adder_id =null, $image = null)
     {
 
         $messaging = app('firebase.messaging');
@@ -28,8 +28,8 @@ class NotificationSender
             'title' => $message['title'],
             'body' => $message['body'],
             'user_id' => $user->id,
-            'adder_id'=> $adder_id
-
+            'adder_id'=> $adder_id,
+            'image' => $image ?: 'test.jpg'
         ]);
 
         // for having notification sound on Apple devices
