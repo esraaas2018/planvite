@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectResource extends JsonResource
 {
@@ -14,6 +15,7 @@ class ProjectResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'deadline' => $this->deadline,
+            'isAdmin' => Auth::id() == $this->user_id,
         ];
     }
 }

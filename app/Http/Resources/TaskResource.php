@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class TaskResource extends JsonResource
 {
@@ -23,6 +24,8 @@ class TaskResource extends JsonResource
             'user_id'=>$this->user_id,
             'status_id'=>$this->status_id,
             'priority'=>$this->priority,
+            'isAdmin'=> Auth::id() == $this->project->user_id,
+            'isMyTask'=>Auth::id() == $this->user_id,
         ];
     }
 }

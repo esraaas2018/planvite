@@ -48,11 +48,11 @@ class NotificationSender
                 //   'notifiable_id' => $model_id ?? 0,
             ])->withApnsConfig($apn);
 
-        if ($user->fcm_token) {
-            $messaging->send(
-                $message,
-                $user->fcm_token
-            );
-        }
+//        if ($user->fcm_token) {
+//            $messaging->send(
+//                $message,
+//                $user->fcm_token
+//            );
+//        }
     }
 }
