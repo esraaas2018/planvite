@@ -13,12 +13,11 @@
         "ext-json": "*",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "kreait/laravel-firebase": "^4.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
         "staudenmeir/belongs-to-through": "^2.5",
-        "treblle/treblle-laravel": "^2.8"
+        "kreait/laravel-firebase": "^4.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -35,7 +34,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/helpers.php"
+            "App/Http/helpers.php"
         ]
     },
     "autoload-dev": {

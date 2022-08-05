@@ -43,15 +43,12 @@ class ProjectController extends Controller
         $project = Project::create($data);
         $project->participants()->attach(Auth::user());
 
-        //ordering the statuses and merge the defaults
-        $statuses = collect(['pending']);
-        $statuses = $statuses->merge((array)$request->statuses);
-        $statuses->push('done');
 
-        $statuses->map(function ($status, $key) use ($project) {
-            $new_status = Status::firstOrCreate(['name' => $status]);
-            $project->statuses()->attach($new_status->id, ['order' => $key]);
-        });
+        $pending = Status::firstOrCreate(['name' => 'pending']);
+        $project->statuses()->attach($pending->id, ['order' => 0]);
+
+        $pending = Status::firstOrCreate(['name' => 'pending']);
+        $project->statuses()->attach($pending->id, ['order' => 10e5]);
 
         return apiResponse(new ProjectResource($project), 'project create successfully', 201);
     }
@@ -60,9 +57,11 @@ class ProjectController extends Controller
     public function addUser(ProjectAddParticipantRequest $request, Project $project)
     {
         $user = User::where('email', $request->email)->firstOrFail();
+
         if ($project->participants()->where('user_id', $user->id)->first()) {
-            return apiResponse(new ProjectResource($project), 'the user is already there');
+            return apiResponse(new ProjectResource($project), 'the user is already there', 422);
         }
+
         $project->participants()->attach($user);
         NotificationSender::send(
             $user, [

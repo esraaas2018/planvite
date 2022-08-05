@@ -79,6 +79,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('projects', "ProjectController");
     Route::post('/projects/{project}/addParticipant', [ProjectController::class, 'addUser']);
     Route::post('/projects/{project}/revokeParticipant', [ProjectController::class, 'revokeUser']);
+
     //sprint
     Route::apiResource('sprints', "SprintController")->except(['store', 'index']);
     Route::post('/projects/{project}/sprints', [SprintController::class, 'store']);
@@ -86,8 +87,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/sprints/{sprint}/runSprint', [SprintController::class, 'runSprint']);
     Route::post('/sprints/{sprint}/offSprint', [SprintController::class, 'offSprint']);
     Route::post('/sprints/{sprint}/recycle', [SprintController::class, 'recycleSprint']);
+
     //task
     Route::apiResource('tasks', "TaskController")->except(['store', 'index']);
+
     //board
     Route::get('/projects/{project}/tasks', [TaskController::class, 'index']);
     Route::put('/tasks/{task}/change-status', [TaskController::class, 'changeStatus']);
@@ -104,13 +107,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('tasks/{task}/subtasks', [SubTaskController::class, 'index']);
     Route::post('tasks/{task}/subtasks', [SubTaskController::class, 'store']);
 
-
     //list of all users in a project
     Route::get('/projects/{project}/users', [ProjectController::class, 'usersList']);
 
     //Rating
     Route::post('/projects/{project}/{reviewed}', [RatingController::class, 'rateUser']);
+
+    //Statuses
+    Route::post('/projects/{project}/statuses', [StatusController::class, 'store']);
+    Route::delete('/projects/{project}/statuses/{status}', [StatusController::class, 'delete']);
 });
+
+
 Route::get('ttt', function(){
     return User::find(5)->rating;
 });
