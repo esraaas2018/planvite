@@ -106,7 +106,7 @@ class ProjectController extends Controller
                 'title' => 'Welcome.',
                 'body' => 'You have been added to ' . $project->name . ' project'
             ],
-            null,
+            $project->user_id,
             $user->image
         );
 
