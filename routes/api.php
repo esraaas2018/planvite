@@ -105,8 +105,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/tasks/{task}/change-status', [TaskController::class, 'changeStatus']);
     Route::post('/sprints/{sprint}/tasks', [TaskController::class, 'store']);
 
-
     Route::put('/tasks/{task}/pin', [TaskController::class, 'pinTask']);
+
+    Route::get('/personal_tasks/completed', [PersonalTaskController::class, 'completedTasks']);
     Route::apiResource('personal_tasks', "PersonalTaskController");
     Route::put('/personal_tasks/{personal_task}/change-status', [PersonalTaskController::class, 'changeStatus']);
 

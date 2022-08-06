@@ -51,5 +51,8 @@ class PersonalTaskController extends Controller
         $personal_task->save();
         return apiResponse(new PersonalTaskResource($personal_task),'task changed Status successfully');
     }
-
+public function completedTasks(){
+        $personal_tasks = PersonalTask::where('completed',1)->get();
+    return apiResponse(PersonalTaskResource::collection($personal_tasks),'all completed personal tasks');
+}
 }
