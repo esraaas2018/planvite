@@ -22,7 +22,7 @@ class TaskResource extends JsonResource
             'description' => $this->description,
             'deadline' => $this->deadline,
             'sprint_id' => $this->sprint_id,
-            'user_id' => $this->user_id,
+            'user_id' => (int)$this->user_id,
             'status_id' => $this->status_id,
             'priority' => $this->priority,
             'isAdmin' => Auth::id() == $this->project->user_id,

@@ -55,11 +55,7 @@ class TaskController extends Controller
 
     public function update(TaskUpdateRequest $request, Task $task)
     {
-        $task->update([
-            'name' => $request->name,
-            'deadline' => $request->deadline,
-            'description' => $request->description
-        ]);
+        $task->update($request->validated());
         return apiResponse(new TaskResource($task), 'task updated successfully');
     }
 
