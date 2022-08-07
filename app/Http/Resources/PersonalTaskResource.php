@@ -20,7 +20,7 @@ class PersonalTaskResource extends JsonResource
             'description' => $this->description,
             'deadline' => $this->deadline,
             'user_id'=>$this->user_id,
-            'completed'=>$this->completed
+            'completed'=>$this->completed,
         ];
 
     }

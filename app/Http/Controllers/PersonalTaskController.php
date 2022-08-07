@@ -16,7 +16,7 @@ class PersonalTaskController extends Controller
     public function index()
     {
         $personal_tasks = PersonalTask::all();
-        return apiResponse(PersonalTaskResource::collection($personal_tasks),'all personal tasks');
+        return apiResponse(PersonalTaskResource::collection($personal_tasks), 'all personal tasks');
     }
 
     public function store(PersonalTaskStoreRequest $request)
@@ -26,7 +26,7 @@ class PersonalTaskController extends Controller
                 'user_id' => Auth::id(),
                 'completed' => $request->has('completed'),
             ]);
-        return apiResponse(new PersonalTaskResource($newTask) , 'task created.');
+        return apiResponse(new PersonalTaskResource($newTask), 'task created.');
     }
 
     public function show(PersonalTask $personal_task)
@@ -34,25 +34,29 @@ class PersonalTaskController extends Controller
         return apiResponse(new PersonalTaskResource($personal_task));
     }
 
-    public function update(PersonalTask $personal_task,PersonalTaskUpdateRequest $request)
+    public function update(PersonalTask $personal_task, PersonalTaskUpdateRequest $request)
     {
         $personal_task->update($request->all());
-        return apiResponse(new PersonalTaskResource($personal_task),'task updated.');
+        return apiResponse(new PersonalTaskResource($personal_task), 'task updated.');
     }
 
-    public function destroy(PersonalTask $personal_task,PersonalTaskDestroyRequest $request)
+    public function destroy(PersonalTask $personal_task, PersonalTaskDestroyRequest $request)
     {
         $personal_task->delete();
-        return apiResponse(null,'task deleted');
+        return apiResponse(null, 'task deleted');
     }
 
-    public function changeStatus(PesronalTaskChangeStatusRequest $request,PersonalTask $personal_task){
-        $personal_task->completed = $request->completed;
+    public function changeStatus(PesronalTaskChangeStatusRequest $request, PersonalTask $personal_task)
+    {
+        $personal_task->completed =$request->completed;
         $personal_task->save();
-        return apiResponse(new PersonalTaskResource($personal_task),'task changed Status successfully');
+        return apiResponse(new PersonalTaskResource($personal_task), 'task changed Status successfully');
     }
-public function completedTasks(){
-        $personal_tasks = PersonalTask::where('completed',1)->get();
-    return apiResponse(PersonalTaskResource::collection($personal_tasks),'all completed personal tasks');
-}
+
+    public function completedTasks()
+    {
+        $completed_count = PersonalTask::where('completed', 1)->get()->count();
+        $personal_tasks_count = PersonalTask::all()->count();
+        return ($personal_tasks_count==0)?0: $completed_count/$personal_tasks_count;
+    }
 }
