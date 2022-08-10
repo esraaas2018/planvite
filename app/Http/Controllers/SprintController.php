@@ -19,7 +19,7 @@ class SprintController extends Controller
 {
     public function index(Project $project)
     {
-        $sprints = $project->sprints()->get();
+        $sprints = $project->sprints()->get()->sortBy('id');
         return apiResponse(SprintResource::collection($sprints));
     }
 
@@ -49,23 +49,22 @@ class SprintController extends Controller
         return apiResponse(null,'sprint deleted successfully');
     }
 
-    public function runSprint(SprintRunRequest $request ,Sprint $sprint)
+    public function toggleSprint(SprintRunRequest $request ,Sprint $sprint)
     {
+        if($sprint->status == true){
+            $sprint->status = false;
+            $sprint->save();
+            return apiResponse(new SprintResource($sprint),'sprint turn off successfully');
+        }
         $sprints =$sprint->project->sprints()->where('status',true)->first();
         if($sprints){
-            return response()->json('you can not turn on');
+            return apiResponse(new SprintResource($sprint),'you can not turn on');
         }
         $sprint->status = true;
         $sprint->save();
         return apiResponse(new SprintResource($sprint),'sprint turn on successfully');
     }
 
-    public function offSprint(SprintOffRequest $request ,Sprint $sprint)
-    {
-        $sprint->status = false;
-        $sprint->save();
-        return apiResponse(new SprintResource($sprint),'sprint turn off successfully');
-    }
 
     public function recycleSprint(SprintRecycleRequest $request ,Sprint $sprint)
     {

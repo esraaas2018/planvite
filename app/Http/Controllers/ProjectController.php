@@ -13,6 +13,7 @@ use App\Http\Resources\SprintResource;
 use App\Http\Resources\UserResource;
 use App\Models\Project;
 use App\Models\Status;
+use App\Models\Task;
 use App\Models\User;
 use App\Services\NotificationSender;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,7 +26,8 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::all();
-        return apiResponse(ProjectResource::collection($projects));
+        $taskcount = Task::all()->count() == 0 ? 0 : Task::all()->where('status_id' , 2)->count()/Task::all()->count();
+        return apiResponse(['projects'=>ProjectResource::collection($projects) , 'tasksDoneInAllProject'=>number_format($taskcount,2,'.','')]);
     }
 
     public function UserProjects()
@@ -95,22 +97,21 @@ class ProjectController extends Controller
     {
         $user = User::where('email', $request->email)->firstOrFail();
 
-
         if ($project->participants()->where('user_id', $user->id)->first()) {
-            return apiResponse(new ProjectResource($project), 'the user is already there', 422);
+            return apiResponse(new UserResource($user), 'the user is already there', 422);
         }
         $project->participants()->attach($user);
-        NotificationSender::send(
-            $user,
-            [
-                'title' => 'Welcome.',
-                'body' => 'You have been added to ' . $project->name . ' project'
-            ],
-            $project->user_id,
-            $user->image
-        );
+//        NotificationSender::send(
+//            $user,
+//            [
+//                'title' => 'Welcome.',
+//                'body' => 'You have been added to ' . $project->name . ' project'
+//            ],
+//            $project->user_id,
+//            $user->image
+//        );
 
-        return apiResponse(new ProjectResource($project), 'user added to project successfully');
+        return apiResponse(new UserResource($user), 'user added to project successfully');
     }
 
     //revoke user from a project

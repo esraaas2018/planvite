@@ -22,7 +22,7 @@ class SprintResource extends JsonResource
             'deadline' => $this->deadline,
             'project_id' => $this->project_id,
             'tasks' => $request->of_user ? TaskResource::collection($tasks->ofUser()->get()) : TaskResource::collection($tasks->get()),
-
+            'isActive' => $this->status
         ];
     }
 }

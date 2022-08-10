@@ -4,7 +4,9 @@ namespace App\Http\Requests;
 
 use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Validator;
 
 class TaskStoreRequest extends FormRequest
 {
@@ -32,5 +34,20 @@ class TaskStoreRequest extends FormRequest
             'user_id'=>['int','nullable','exists:participants,user_id'],
             'priority'=>  ['nullable','in:low,medium,high'],
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        $validator->validate();
+        $validator->after(function ($validator) {
+            if(Carbon::parse($this->deadline)->toDateString() > $this->route()->sprint->deadline)
+            {
+                $validator->errors()->add('deadline', 'cannot add a task with a date after sprint deadline date');
+            }
+            if(Carbon::parse($this->deadline)->toDateString() < today()->toDateString())
+            {
+                $validator->errors()->add('deadline', 'cannot add a task with a date before today');
+            }
+        });
     }
 }

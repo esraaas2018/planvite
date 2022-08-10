@@ -18,11 +18,14 @@ class StatusController extends Controller
 
     public function store(StatusStoreRequest $request, Project $project){
         $pending = Status::firstOrCreate(['name' => $request->name]);
-        $last_order = $project->statuses()->orderByDesc('order')->get()->skip(1)->first()->order;
-        $project->statuses()->attach($pending->id, ['order' => $last_order + 1]);
-
+//        $last_order = $project->statuses()->orderByDesc('order')->get()->skip(1)->first()->order;
+        $last_order = $project->statuses()->orderByDesc('order')->get()->skip(1)->first();
+        if($project->statuses()->where('status_id',$pending->id)->first()){
+            return apiResponse(null, 'cannot create two status in same name',422);
+        }
+        $project->statuses()->attach($pending->id, ['order' => $last_order['pivot']['order'] + 1]);
         $statuses = $project->statuses()->withPivot('order')->orderBy('order')->get();
-        return apiResponse(StatusResource::collection($statuses), 201);
+        return apiResponse(StatusResource::collection($statuses), 'status added successfully',201);
     }
 
     public function delete(Project $project, Status $status){

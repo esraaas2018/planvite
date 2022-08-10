@@ -62,4 +62,17 @@ class Project extends Model
         return $this->belongsToMany(User::class, 'participants');
     }
 
+    public function tasksDoneInProject(){
+        $task_done =$this->tasks()->where('status_id' ,Status::where('name', 'done')->first()->id)->count();
+        return $this->tasks()->count()==0?0:$task_done / $this->tasks()->count();
+    }
+
+    public function tasksDoneInSprint(){
+        $task_done =$this->sprints()->where('status',true)->first();
+        if($task_done){
+            $task_done1 = $task_done->tasks()->where('status_id' ,Status::where('name', 'done')->first()->id)->count();
+            return $this->sprints()->where('status',true)->first()->tasks()->count()==0?0:$task_done1 / $this->sprints()->where('status',true)->first()->tasks()->count();
+        }
+        return 0;
+    }
 }

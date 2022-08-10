@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class PersonalTaskStoreRequest extends FormRequest
 {
@@ -31,5 +33,14 @@ class PersonalTaskStoreRequest extends FormRequest
             'description' => 'string|nullable',
         ];
     }
-
+    public function withValidator(Validator $validator)
+    {
+        $validator->validate();
+        $validator->after(function ($validator) {
+            if(Carbon::parse($this->deadline) < today())
+            {
+                $validator->errors()->add('deadline', 'deadline is not valid');
+            }
+        });
+    }
 }

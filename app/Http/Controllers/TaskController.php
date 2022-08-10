@@ -24,15 +24,14 @@ class TaskController extends Controller
 //                return $q->where('id', $request->status_id);
 //            })->get();
 
-        $statuses = $project->statuses()->get();
+        $statuses = $project->statuses()->orderBy('order')->get();
 
         $data = $statuses->map(function ($status) use ($project) {
             return [
                 'status_name' => $status->name,
+                'status_id' => $status->id,
                 'tasks' => TaskResource::collection($project->sprints()->where('status', true)->firstOrFail()
-                    ->tasks()->whereHas('status', function ($q) use ($status) {
-                        return $q->where('id', $status->id);
-                    })->get())
+                    ->tasks()->where('status_id', $status->id)->get())
             ];
         });
 

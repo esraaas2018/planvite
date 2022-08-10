@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\Validator;
 
 /**
  * @property mixed $name
@@ -35,5 +37,16 @@ class ProjectStoreRequest extends FormRequest
             'statuses' => ['nullable', 'array', 'max:7'],
             'statuses.*' => ['string', 'max:20']
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        $validator->validate();
+        $validator->after(function ($validator) {
+            if(Carbon::parse($this->deadline) <= today())
+            {
+                $validator->errors()->add('deadline', 'cannot add a project with a date before tomorrow');
+            }
+        });
     }
 }

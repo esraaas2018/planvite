@@ -93,8 +93,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('sprints', "SprintController")->except(['store', 'index']);
     Route::post('/projects/{project}/sprints', [SprintController::class, 'store']);
     Route::get('/projects/{project}/sprints', [SprintController::class, 'index']);
-    Route::post('/sprints/{sprint}/runSprint', [SprintController::class, 'runSprint']);
-    Route::post('/sprints/{sprint}/offSprint', [SprintController::class, 'offSprint']);
+    Route::post('/sprints/{sprint}/toggleSprint', [SprintController::class, 'toggleSprint']);
     Route::post('/sprints/{sprint}/recycle', [SprintController::class, 'recycleSprint']);
 
     //task
